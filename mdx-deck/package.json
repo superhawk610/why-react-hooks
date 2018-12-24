@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "version": "1.0.0",
+  "description": "Deck created with mdx-deck",
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx",
+    "pdf": "mdx-deck pdf deck.mdx",
+    "image": "mdx-deck screenshot deck.mdx",
+    "help": "mdx-deck"
+  },
+  "author": "Aaron Ross",
+  "license": "MIT",
+  "devDependencies": {
+    "mdx-deck": "https://github.com/superhawk610/mdx-deck"
+  },
+  "name": "react-hooks",
+  "main": "index.js"
+}

@@ -1,0 +1,189 @@
+import { Head, Appear } from 'mdx-deck';
+import { Split, Invert } from 'mdx-deck/layouts';
+import { SplitInvert } from './layouts';
+import ListItem from './components/ListItem';
+
+export { default as theme } from './theme';
+
+<Head>
+  <title>React Hooks</title>
+</Head>
+
+# React Hooks
+
+### All the React, None of the Class
+
+## 😎
+
+---
+
+## Why hooks?
+
+<ul>
+  <Appear>
+    <ListItem>easier code reuse</ListItem>
+    <ListItem>more composable logic</ListItem>
+    <ListItem>less boilerplate</ListItem>
+    <ListItem>more legible code</ListItem>
+    <ListItem>lower learning curve</ListItem>
+    <ListItem>better separation of concerns</ListItem>
+  </Appear>
+</ul>
+
+```notes
+- easier code reuse
+- more composable logic
+- less boilerplate
+- more legible code
+- lower learning curve
+- better separation of concerns
+```
+
+---
+
+## Why hooks for your code?
+
+<ul>
+  <Appear>
+    <ListItem>no breaking changes</ListItem>
+    <ListItem>smaller bundle sizes</ListItem>
+    <ListItem>lower overhead</ListItem>
+    <ListItem>no deep component tree nesting</ListItem>
+  </Appear>
+</ul>
+
+```notes
+- no breaking changes
+- smaller bundle sizes
+- lower overhead
+- no deep component tree nesting
+```
+
+---
+
+## [pic] deep component tree nesting
+
+---
+
+## Meet the Hooks
+
+- useState
+- useEffect
+- useContext
+
+---
+
+### Yes, there are other hooks.
+
+- useReducer
+- useCallback
+- useMemo
+- useRef
+- useImperativeMethods
+- useLayoutEffect
+
+---
+
+## useState
+
+blah
+
+---
+
+## useState - Example
+
+blah
+
+---
+
+## useState - One or Many Variables?
+
+merge vs. replace state
+
+```notes
+- this.setState() merges state
+- useState() replaces state
+```
+
+---
+
+## useEffect
+
+blah
+
+---
+
+## useContext
+
+---
+
+## useReducer
+
+---
+
+## useCallback
+
+blah
+
+---
+
+## useMemo
+
+blah
+
+---
+
+## useRef
+
+blah
+
+---
+
+## useRef - Example
+
+blah
+
+---
+
+## useRef - Instance Variables
+
+blah
+
+```notes
+- conceptually similar to instance variables on a class
+- only set in event handlers in effects, not in render
+```
+
+---
+
+## useImperativeMethods
+
+Used with `forwardRef` to customize the instance value that is passed to parent components when using `ref`.
+
+---
+
+## useLayoutEffect
+
+Similar to `useEffect` but only fires after all DOM mutations have completed.
+
+---
+
+## Concerns
+
+Static typing
+
+---
+
+## How do I get started?
+
+```
+npm install react@next react-dom@next
+```
+
+---
+
+## Further reading
+
+<https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889>
+
+<https://reactjs.org/docs/hooks-overview.html>
