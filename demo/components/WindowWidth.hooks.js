@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Card from './Card';
+import Card from '../presentational/Card';
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
