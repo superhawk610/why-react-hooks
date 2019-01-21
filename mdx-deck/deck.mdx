@@ -17,6 +17,13 @@ export { default as theme } from './theme';
 
 ---
 
+## What are hooks?
+
+- replacement for Higher-Order Components & render props
+- stateful lifecycle methods for functional components
+
+---
+
 ## Why hooks?
 
 <ul>
@@ -41,6 +48,10 @@ export { default as theme } from './theme';
 
 ---
 
+![legos](images/legos.png)
+
+---
+
 ## Why hooks for your code?
 
 <ul>
@@ -48,6 +59,7 @@ export { default as theme } from './theme';
     <ListItem>no breaking changes</ListItem>
     <ListItem>smaller bundle sizes</ListItem>
     <ListItem>lower overhead</ListItem>
+    <ListItem>cross-cutting concerns</ListItem>
     <ListItem>no deep component tree nesting</ListItem>
   </Appear>
 </ul>
@@ -56,12 +68,13 @@ export { default as theme } from './theme';
 - no breaking changes
 - smaller bundle sizes
 - lower overhead
+- cross-cutting concerns (stuff that's relevant to multiple distinct parts of the app)
 - no deep component tree nesting
 ```
 
 ---
 
-## [pic] deep component tree nesting
+![deeply-nested](images/deeply-nested-1.png)
 
 ---
 
@@ -79,26 +92,376 @@ export { default as theme } from './theme';
 - useCallback
 - useMemo
 - useRef
-- useImperativeMethods
+
+---
+
+### The "you'll know when you need these" hooks
+
+- useImperativeHandle
 - useLayoutEffect
+- useDebugValue
+
+```notes
+- useImperativeHandle was originall useImperativeMethods
+```
 
 ---
 
-## useState
+## Object destructuring
 
-blah
+You've likely seen object destructuring if you work with React
+
+```
+function MyComponent({ name }) { /*...*/ };
+
+const MyComponent = ({ name }) => ( /*...*/ );
+
+const OtherComponent = props => ( /*...*/ props.name /*...*/ );
+```
+
+```notes
+- introduced in ES6
+```
 
 ---
 
-## useState - Example
+## Object destructuring
 
-blah
+```
+const obj = {
+  foo: "foo",
+  bar: 0,
+};
+
+const { foo, bar } = obj; // foo = "foo", bar = 0
+
+const { baz = "baz" } = obj; // default value for baz = "baz"
+
+const { foo, ...rest } = obj; // rest = { bar: 0 }
+
+const { foo: renamedFoo } = obj; // renamedFoo = "foo"
+```
+
+```notes
+- default values
+- rest spread operator
+- difficult to rename
+```
 
 ---
 
-## useState - One or Many Variables?
+## Array destructuring?
 
-merge vs. replace state
+Array destructuring is very similar, just with Arrays instead of Objects
+
+```
+const arr = [1, 2, 3];
+
+const [foo, bar] = arr; // foo = 1, bar = 2
+
+const [foo, bar, baz, qux = 10]; // default value for qux = 10
+
+const [fee, fii, fum] = arr; // fee = 1, fii = 2, fum = 3
+
+const [ack, ...rest] = arr; // rest = [2, 3]
+```
+
+```notes
+- default values
+- choose your own variable names (easier than renaming fields in obj. dest.)
+- rest spread operator
+```
+
+---
+
+```
+function Return3() {
+  return 3;
+}
+
+function Return4And5() {
+  return [4, 5];
+}
+
+function ReturnFooAndBar() {
+  return {
+    foo: "foo",
+    bar: "bar",
+  };
+}
+
+function main() {
+  const three = Return3();
+  const [four, five] = Return4And5();
+  const { foo, bar } = ReturnFooAndBar();
+}
+```
+
+```notes
+- how to return multiple values from a function
+```
+
+---
+
+## Hooks syntax
+
+- must only be called from top-level
+- must not be called conditionally
+- must be prefixed with `use`
+
+```
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const [name, setName] = useState("Aaron");
+
+  return (
+    <div>
+      {name}
+    </div>
+  );
+}
+```
+
+```notes
+- typeof name: typeof "Aaron" (string)
+- typeof setName: (newName: string) => void
+```
+
+---
+
+## Hooks syntax: ESLint rule
+
+```
+npm install -D eslint-plugin-react-hooks
+```
+
+- no conditional hooks
+- recommended hook dependencies (in development)
+
+---
+
+## So... why array destructuring?
+
+```
+// NOTE: this doesn't work
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const { state, setState } = useState("Aaron");
+
+  return (
+    <div>
+      {state}
+    </div>
+  );
+}
+```
+
+---
+
+## So... why array destructuring?
+
+```
+// NOTE: this doesn't work
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const { state: name, setState: setName } = useState("Aaron");
+
+  return (
+    <div>
+      {name}
+    </div>
+  );
+}
+```
+
+```notes
+well that's clunky as hell
+```
+
+---
+
+## So... why array destructuring?
+
+```
+// NOTE: this doesn't work
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const { state: name, setState: setName } = useState("Aaron");
+  const { state: age, setState: setAge } = useState("24");
+
+  return (
+    <div>
+      {name} is {age} years old
+    </div>
+  );
+}
+```
+
+```notes
+also, what happens when using the same hook more than once?
+it gets even worse!
+```
+
+---
+
+## So... THAT's why array destructuring!
+
+```
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const [name, setName] = useState("Aaron");
+  const [age, setAge] = useState("24");
+
+  return (
+    <div>
+      {name} is {age} years old
+    </div>
+  );
+}
+```
+
+---
+
+## Hooks: A visualization
+
+```
+function RenderFunctionComponent() {
+  const [firstName, setFirstName] = useState("Rudi");
+  const [lastName, setLastName] = useState("Yardley");
+
+  return (
+    <Button onClick={() => setFirstName("Fred")}>Fred</Button>
+  );
+}
+```
+
+---
+
+![normal-1](images/normal-1.png)
+
+---
+
+![normal-2](images/normal-2.png)
+
+---
+
+![normal-3](images/normal-3.png)
+
+---
+
+![normal-4](images/normal-4.png)
+
+---
+
+### So why not conditionally use hooks?
+
+```
+let firstRender = true;
+
+function RenderFunctionComponent() {
+  let initName;
+
+  if(firstRender){
+    [initName] = useState("Rudi");
+    firstRender = false;
+  }
+  const [firstName, setFirstName] = useState(initName);
+  const [lastName, setLastName] = useState("Yardley");
+
+  return (
+    <Button onClick={() => setFirstName("Fred")}>Fred</Button>
+  );
+}
+```
+
+---
+
+![bad-1](images/bad-1.png)
+
+---
+
+![bad-1](images/bad-1.png)
+
+---
+
+### Flow typing for a hook
+
+```
+export type Hook = {
+  memoizedState: any,
+
+  baseState: any,
+  baseUpdate: Update<any, any> | null,
+  queue: UpdateQueue<any, any> | null,
+
+  next: Hook | null,
+}
+```
+
+---
+
+## So how accurate was our example?
+
+```
+// our (simplified) example
+[
+  ["Rudi", setFirstName],
+  ["Yardley", setLastName],
+]
+
+// closer to reality (still pseudocode)
+{
+  memoizedState: "Rudi",
+  baseUpdate: /* setFirstName action */,
+  next: {
+    memoizedState: "Yardley",
+    baseUpdate: /* setLastName action */,
+    next: null,
+  },
+}
+```
+
+```notes
+- not an Array but a Linked List
+ref: https://github.com/facebook/react/blob/8f45a7fdc469c6d88ca5ca105095b03dd4e862e1/packages/react-reconciler/src/ReactFiberHooks.js#L57
+```
+
+---
+
+## `useState` Hook
+
+Coming from `this.setState`, what's different?
+
+---
+
+```
+class MyClassComponent extends React.Component {
+  state = {
+    foo: "foo",
+    active: false,
+  };
+
+  onClick = () => {
+    this.setState({
+      foo: "bar",
+    });
+  };
+}
+
+function MyComponent() {
+  const [foo, setFoo] = useState("foo");
+  const [active, setActive] = useState(false);
+
+  const onClick = () => {
+    setFoo("bar");
+  };
+}
+```
 
 ```notes
 - this.setState() merges state
@@ -107,17 +470,134 @@ merge vs. replace state
 
 ---
 
+### `useLegacyState` - reimplementing `this.setState`
+
+```
+import { useState } from 'react';
+
+export function useLegacyState(initialState = {}) {
+  const [state, replaceState] = useState(initialState);
+
+  const setState = changes => replaceState({
+    ...state,
+    ...changes,
+  });
+
+  return [state, setState];
+}
+```
+
+```notes
+- this is discouraged in favor of multiple single value getters/setters
+ref: https://reactjs.org/docs/hooks-faq.html#should-i-use-one-or-many-state-variables
+```
+
+---
+
+### `useLegacyState` - reimplementing `this.setState`
+
+```
+import { useState } from 'react';
+
+export function useLegacyState(initialState = {}) {
+  const [state, replaceState] = useState(initialState);
+
+  const setState = updater => {
+    const functional = typeof updater === 'function';
+    const changes = functional ? updater(state) : updater;
+
+    replaceState({
+      ...state,
+      ...changes,
+    });
+  };
+
+  return [state, setState];
+}
+```
+
+```notes
+- again, this is discouraged
+- good look at our first custom hook!
+```
+
+---
+
 ## useEffect
 
-blah
+`useEffect` wraps 3 lifecycle methods into one:
+
+- `componentDidMount`
+- `componentDidUpdate`
+- `componentWillUnmount`
+
+Think of it as hooking into any time just after your component has painted to the screen.
+
+---
+
+```
+import React, { useEffect } from 'react';
+
+// componentDidMount
+function Mounter({ user, notifications }) {
+
+  useEffect(() => {
+    console.log("I'm mounted!");
+  }, []);
+
+  return /*...*/;
+}
+```
+
+---
+
+```
+import React, { useEffect } from 'react';
+
+// componentDidUpdate
+function Updater({ user, notifications }) {
+
+  useEffect(() => {
+    console.log("User changed!", user.name);
+  }, [user]);
+
+  useEffect(() => {
+    console.log("Props changed!", user.name);
+  });
+
+  return /*...*/;
+}
+```
+
+---
+
+```
+import React, { useEffect } from 'react';
+
+// componentWillUnmount
+function Unmounter({ user, notifications }) {
+
+  useEffect(() => {
+    return () => {
+      console.log("I'm unmounting!");
+    };
+  }, []);
+
+  return /*...*/;
+}
+```
 
 ---
 
 ## useContext
 
+blah
+
 ---
 
 ## useReducer
+
+blah
 
 ---
 
@@ -156,7 +636,7 @@ blah
 
 ---
 
-## useImperativeMethods
+## useImperativeHandle
 
 Used with `forwardRef` to customize the instance value that is passed to parent components when using `ref`.
 
@@ -168,9 +648,21 @@ Similar to `useEffect` but only fires after all DOM mutations have completed.
 
 ---
 
-## Concerns
+## useDebugValue
 
-Static typing
+Similar to `displayName`/`getDisplayName`
+
+Allows you to output a variable next to the Hook's container in DevTools
+
+---
+
+## usePrevious
+
+---
+
+## DEMO
+
+- use some cool demos from hook library
 
 ---
 
@@ -180,10 +672,32 @@ Static typing
 npm install react@next react-dom@next
 ```
 
+```notes
+- v16.7.0-alpha.1+
+- v16.8.0-alpha.1 (latest as of this talk)
+```
+
+---
+
+## Couldn't have done it without
+
+<https://reactjs.org/docs/hooks-overview.html>
+
+<https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e>
+
 ---
 
 ## Further reading
 
 <https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889>
 
-<https://reactjs.org/docs/hooks-overview.html>
+```
+https://github.com/facebook/react/packages/react-reconciler
+https://github.com/facebook/react/packages/react-reconciler/src/ReactFiberHooks.js
+```
+
+---
+
+## Try the demo yourself
+
+<https://github.com/superhawk610/why-react-hooks>

@@ -12,7 +12,7 @@
   "author": "Aaron Ross",
   "license": "MIT",
   "devDependencies": {
-    "mdx-deck": "https://github.com/superhawk610/mdx-deck"
+    "mdx-deck": "^1.8.2"
   },
   "name": "react-hooks",
   "main": "index.js"

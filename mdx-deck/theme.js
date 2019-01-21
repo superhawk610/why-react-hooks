@@ -4,6 +4,10 @@ export default {
   ...base,
   css: {
     ...base.css,
+    img: {
+      ...base.css.img,
+      maxHeight: '90vh',
+    },
     pre: {
       ...base.css.pre,
       padding: '10px 15px',
