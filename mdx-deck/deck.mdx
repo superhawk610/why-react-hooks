@@ -24,6 +24,14 @@ export { default as theme } from './theme';
 
 ---
 
+![legos](images/legos.png)
+
+---
+
+![dan_tweet_metaphor](images/dan_tweet_metaphor.png)
+
+---
+
 ## Why hooks?
 
 <ul>
@@ -45,10 +53,6 @@ export { default as theme } from './theme';
 - lower learning curve
 - better separation of concerns
 ```
-
----
-
-![legos](images/legos.png)
 
 ---
 
@@ -428,6 +432,7 @@ export type Hook = {
 
 ```notes
 - not an Array but a Linked List
+
 ref: https://github.com/facebook/react/blob/8f45a7fdc469c6d88ca5ca105095b03dd4e862e1/packages/react-reconciler/src/ReactFiberHooks.js#L57
 ```
 
@@ -489,6 +494,7 @@ export function useLegacyState(initialState = {}) {
 
 ```notes
 - this is discouraged in favor of multiple single value getters/setters
+
 ref: https://reactjs.org/docs/hooks-faq.html#should-i-use-one-or-many-state-variables
 ```
 
@@ -601,33 +607,78 @@ blah
 
 ---
 
+## useMemo
+
+blah
+
+```notes
+"You may rely on useMemo as a performance optimization, not as a semantic guarantee. In the future, React may choose to “forget” some previously memoized values and recalculate them on next render, e.g. to free memory for offscreen components. Write your code so that it still works without useMemo — and then add it to optimize performance."
+
+ref: https://reactjs.org/docs/hooks-reference.html#usememo
+```
+
+---
+
 ## useCallback
 
 blah
 
 ---
 
-## useMemo
+### So why not `useMemo` and `useCallback` everything?
 
-blah
+```
+npm install babel-plugin-react-persist
+```
+
+```notes
+ref: https://medium.com/the-guild/use-this-magical-babel-plugin-and-get-a-performance-boost-for-your-react-components-f27fea9554aa
+```
 
 ---
 
 ## useRef
 
-blah
+```
+import React, { useRef } from 'react';
+
+function MyComponent() {
+  const inputEl = useRef(null); // or just useRef()
+
+  const onClick = () => {
+    inputEl.current.focus();
+  };
+
+  return (
+    <input ref={inputEl} defaultValue="foo" />
+    <button onClick={onClick}>Focus Input</button>
+  );
+}
+```
 
 ---
 
-## useRef - Example
+### `useRef` replaces Instance Variables
 
-blah
+```
+import React, { useRef, useEffect } from 'react';
 
----
+function MyComponent() {
+  const timeoutRef = useRef();
 
-## useRef - Instance Variables
+  useEffect(() => {
+    timeoutRef.current = setTimeout(doStuff(), 10000);
 
-blah
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  /*...*/
+}
+```
 
 ```notes
 - conceptually similar to instance variables on a class
@@ -639,6 +690,10 @@ blah
 ## useImperativeHandle
 
 Used with `forwardRef` to customize the instance value that is passed to parent components when using `ref`.
+
+```notes
+react-spring uses this to customize the Controller API exposed on the component ref
+```
 
 ---
 
@@ -656,13 +711,35 @@ Allows you to output a variable next to the Hook's container in DevTools
 
 ---
 
-## usePrevious
+replace `componentWillReceiveProps` & `getDerivedStateFromProps` with `usePrevious`
+
+```
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+function Component() {
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count);
+  return <h1>Now: {count}, before: {prevCount}</h1>;
+}
+```
+
+```notes
+"It’s possible that in the future React will provide a usePrevious Hook out of the box since it’s a relatively common use case."
+
+ref: https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+```
 
 ---
 
-## DEMO
+## DEMO TIME
 
-- use some cool demos from hook library
+<img src="images/cool.gif" style={{ height: '500px' }} />
 
 ---
 
@@ -679,25 +756,46 @@ npm install react@next react-dom@next
 
 ---
 
+![react-roadmap](images/react-roadmap.png)
+
+---
+
+![dan_tweet_timeline](images/dan_tweet_timeline.png)
+
+---
+
 ## Couldn't have done it without
 
-<https://reactjs.org/docs/hooks-overview.html>
+- React hooks: not magic, just arrays (Rudi Yardley)
+- Under the hood of React's hooks system (Eytan Manor)
+- @nikgraf's Collection of React Hooks
 
-<https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e>
-
----
-
-## Further reading
-
-<https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889>
-
-```
-https://github.com/facebook/react/packages/react-reconciler
-https://github.com/facebook/react/packages/react-reconciler/src/ReactFiberHooks.js
+```notes
+ref: https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e
+ref: https://medium.com/the-guild/under-the-hood-of-reacts-hooks-system-eb59638c9dba
+ref: https://nikgraf.github.io/react-hooks/
 ```
 
 ---
 
-## Try the demo yourself
+## Further learning
+
+- Making Sense of React Hooks (Dan Abramov)
+- React Today and Tomorrow (Sophie Alpert & Dan Abramov @ React Conf 2018)
+- Hooks are Mixins with Ryan Florence (React Podcast)
+- React Hooks documentation
+- React source, specifically `ReactFiberHooks` in `react-reconciler`
+
+```notes
+ref: https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889
+ref: https://www.youtube.com/watch?v=V-QO-KO90iQ
+ref: https://reactpodcast.simplecast.fm/31
+ref: https://reactjs.org/docs/hooks-intro.html
+ref: https://github.com/facebook/react/packages/react-reconciler/src/ReactFiberHooks.js
+```
+
+---
+
+### Give me a Follow and try the demos yourself 😎
 
 <https://github.com/superhawk610/why-react-hooks>
