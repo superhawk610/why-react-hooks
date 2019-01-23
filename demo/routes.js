@@ -1,4 +1,3 @@
-import Sandbox from './pages/Sandbox';
 import WindowWidth from './pages/WindowWidth';
 import Inputs from './pages/Inputs';
 import OnceOnMount from './pages/OnceOnMount';
@@ -7,13 +6,9 @@ import Observables from './pages/Observables';
 import ConsumeContext from './pages/ConsumeContext';
 import Reducer from './pages/Reducer';
 import Memoization from './pages/Memoization';
+import Sandbox from './pages/Sandbox';
 
 const routes = [
-  {
-    name: 'Sandbox',
-    path: '/sandbox',
-    component: Sandbox,
-  },
   {
     name: 'Window Width',
     path: '/window-width',
@@ -53,6 +48,11 @@ const routes = [
     name: 'Memoization',
     path: '/memoization',
     component: Memoization,
+  },
+  {
+    name: 'Sandbox',
+    path: '/sandbox',
+    component: Sandbox,
   },
 ];
 

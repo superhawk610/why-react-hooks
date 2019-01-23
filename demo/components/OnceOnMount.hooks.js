@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useForceRender } from '../hooks/useForceRender';
 import Card from '../presentational/Card';
+import Button from '../presentational/Button';
 
 import { fetchList } from '../services/api.service';
 
@@ -16,8 +18,11 @@ function OnceOnMount({ log }) {
     });
   }, []);
 
+  const { semaphore, forceRender } = useForceRender();
+  useEffect(() => log('rendering'), [semaphore]);
+  
   return (
-    <Card>{loading ? 'Loading...' : <pre>{JSON.stringify(data)}</pre>}</Card>
+    <Card>{loading ? 'Loading...' : <pre>{JSON.stringify(data)}</pre>}<Button text="Force Render" onClick={forceRender} /></Card>
   );
 }
 

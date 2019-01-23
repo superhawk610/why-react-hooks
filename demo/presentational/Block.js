@@ -32,6 +32,7 @@ const Container = styled.pre`
   margin-top: 5px;
   height: ${props => (props.constrain ? '150px' : 'auto')};
   overflow-y: auto;
+  white-space: pre-wrap;
 `;
 
 export default Block;

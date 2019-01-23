@@ -23,9 +23,9 @@ function Sandbox() {
     <Card>
       <Button text="Add Todo" onClick={onClick} />
       <Spacer />
-      {todos.map(todo => (
-        <div key={todo.id}>{todo.name}</div>
-      ))}
+      {todos.length
+        ? todos.map(todo => <div key={todo.id}>{todo.name}</div>)
+        : 'Nothing here!'}
     </Card>
   );
 }

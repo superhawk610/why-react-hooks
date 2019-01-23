@@ -4,8 +4,8 @@ import LED from '../presentational/LED';
 import { API } from '../services/api.service';
 
 function Observables({ log }) {
-  const [active, setActive] = React.useState(false);
-  const [notificationCount, setNotificationCount] = React.useState(0);
+  const [active, setActive] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     log('subscribing to observable...');
