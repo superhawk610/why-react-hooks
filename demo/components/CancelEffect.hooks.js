@@ -11,8 +11,8 @@ function CancelEffect({ log }) {
 
   const onClickCancel = () => {
     log('cancelled request');
-    setLoading(false);
     if (cancelRequest.current) cancelRequest.current();
+    setLoading(false);
   };
 
   useEffect(() => {

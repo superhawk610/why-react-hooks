@@ -2,6 +2,7 @@ import { Head, Appear } from 'mdx-deck';
 import { Split, Invert } from 'mdx-deck/layouts';
 import { SplitInvert } from './layouts';
 import ListItem from './components/ListItem';
+import SideBySide from './components/SideBySide';
 
 export { default as theme } from './theme';
 
@@ -26,6 +27,11 @@ export { default as theme } from './theme';
 
 ![legos](images/legos.png)
 
+```notes
+- hooks does for logic what React did for components
+- hooks does for logic what JSX did for collocation
+```
+
 ---
 
 ![dan_tweet_metaphor](images/dan_tweet_metaphor.png)
@@ -40,6 +46,7 @@ export { default as theme } from './theme';
     <ListItem>more composable logic</ListItem>
     <ListItem>less boilerplate</ListItem>
     <ListItem>more legible code</ListItem>
+    <ListItem>more declarative code</ListItem>
     <ListItem>lower learning curve</ListItem>
     <ListItem>better separation of concerns</ListItem>
   </Appear>
@@ -50,9 +57,39 @@ export { default as theme } from './theme';
 - more composable logic
 - less boilerplate
 - more legible code
+- more declarative code (what to be done, not how to do it)
 - lower learning curve
 - better separation of concerns
+
+- have the framework work for you, rather than working around the framework
+- what you want, not how to do it; useEffect instead of componentDidMount, componentDidUpdate, componentWillUnmount
 ```
+
+---
+
+![laurie_tweet_reusability](images/laurie_tweet_reusability.png)
+
+---
+
+<SideBySide left="images/no-hooks-simple.jpg" right="images/hooks-simple.jpg" />
+
+```notes
+ref: https://twitter.com/jamiebuilds/status/1055988181626056704
+```
+
+---
+
+<SideBySide
+  left="images/no-hooks-complex.jpg"
+  right="images/hooks-complex.jpg"
+/>
+
+---
+
+<SideBySide
+  left="images/no-hooks-minified.jpg"
+  right="images/hooks-minified.jpg"
+/>
 
 ---
 
@@ -74,11 +111,30 @@ export { default as theme } from './theme';
 - lower overhead
 - cross-cutting concerns (stuff that's relevant to multiple distinct parts of the app)
 - no deep component tree nesting
+
+- Ryan Florence says it's "90% cleaner code"
+- not necessarily less code, just easier to understand and maintain
 ```
 
 ---
 
 ![deeply-nested](images/deeply-nested-1.png)
+
+---
+
+<SideBySide left="images/without-hooks.jpg" right="images/with-hooks.jpg" />
+
+```notes
+ref: https://twitter.com/threepointone/status/1056594421079261185
+```
+
+---
+
+<video controls loop src="images/hooks-rearrangement.mp4" />
+
+```notes
+ref: https://twitter.com/prchdk/status/1056960391543062528
+```
 
 ---
 
@@ -456,8 +512,14 @@ class MyClassComponent extends React.Component {
       foo: "bar",
     });
   };
-}
 
+  /*...*/
+}
+```
+
+<br />
+
+```
 function MyComponent() {
   const [foo, setFoo] = useState("foo");
   const [active, setActive] = useState(false);
@@ -465,6 +527,8 @@ function MyComponent() {
   const onClick = () => {
     setFoo("bar");
   };
+
+  /*...*/
 }
 ```
 
@@ -544,7 +608,6 @@ Think of it as hooking into any time just after your component has painted to th
 ```
 import React, { useEffect } from 'react';
 
-// componentDidMount
 function Mounter({ user, notifications }) {
 
   useEffect(() => {
@@ -597,35 +660,250 @@ function Unmounter({ user, notifications }) {
 
 ## useContext
 
-blah
+Previously, `React.createContext` gave you a `Provider` and a `Consumer`
+
+```
+const { Provider, Consumer } = React.createContext(uninitializedValue);
+
+function App() {
+  return (
+    <Consumer>
+      {context => (
+        /* do something with context */
+      )}
+    </Consumer>
+  );
+}
+
+ReactDOM.render(
+  <Provider value={someValue}>
+    <App />
+  </Provider>
+, root);
+```
+
+---
+
+## useContext
+
+The `Provider` functions the same, but the `Consumer` is now replaced by `useContext`
+
+```
+const MyContext = React.createContext(uninitializedValue);
+
+function App() {
+  const context = useContext(MyContext);
+
+  return (
+    <div>
+      /* do something with context */
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <MyContext.Provider value={someValue}>
+    <App />
+  </MyContext.Provider>
+, root);
+```
 
 ---
 
 ## useReducer
 
-blah
+<SideBySide left="images/redux-flow.png" right="images/use-reducer-flow.png" />
+
+---
+
+### `useReducer` helps with complex local state flows
+
+```
+import React, { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+      case "RESET":
+        return initialState;
+      case "INCREMENT":
+        return {
+          counter: state.counter + 1,
+        };
+      case "DECREMENT":
+        return {
+          counter: state.counter - 1,
+        };
+      default:
+        return state;
+    }
+}
+
+function MyComponent() {
+  const [state, dispatch] = useReducer(reducer, { counter: 0 });
+
+  /*...*/
+}
+```
+
+---
+
+```
+/*...*/
+
+function MyComponent() {
+  const [state, dispatch] = useReducer(reducer, { counter: 0 });
+
+  return (
+    <>
+      Counter: {counter}
+      <button onClick={() => dispatch({ type: "INCREMENT" })} />
+      <button onClick={() => dispatch({ type: "DECREMENT" })} />
+      <button onClick={() => dispatch({ type: "RESET" })} />
+    </>
+  );
+}
+```
+
+---
+
+### `useState` is just a convenience wrapper for `useReducer`
+
+as such, `setState` optionally accepts a functional argument
+
+```
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const [age, setAge] = useState(24);
+
+  const onClick = () => {
+    setAge(prevAge => setAge(prevAge + 1));
+  };
+
+  /*...*/
+}
+```
+
+```notes
+after all, that's what a reducer does; it takes an initial value and a description of changes and returns a single new value
+```
 
 ---
 
 ## useMemo
 
-blah
+Class components can bail out of renders if their props haven't changed by extending `PureComponent` or returning `false` from `shouldComponentUpdate`
+
+Wrapping a function component with `React.memo` will only rerun the function if the props have changed
 
 ```notes
 "You may rely on useMemo as a performance optimization, not as a semantic guarantee. In the future, React may choose to “forget” some previously memoized values and recalculate them on next render, e.g. to free memory for offscreen components. Write your code so that it still works without useMemo — and then add it to optimize performance."
 
 ref: https://reactjs.org/docs/hooks-reference.html#usememo
+ref: https://reactjs.org/blog/2018/10/23/react-v-16-6.html#reactmemo
+```
+
+---
+
+`useMemo` prevents needless reruns of expensive calculations
+
+```
+import React, { useMemo } from 'react';
+
+function MyComponent({ data }) {
+  const data = useMemo(() => {
+    // do some heavy lifting with data
+  }, [data]);
+
+  /*...*/
+}
+```
+
+```notes
+it's even better than React.memo because it lets you specify a subset of props to watch
+```
+
+---
+
+`useMemo` can be used however you need it
+
+```
+import React, { useMemo } from 'react';
+
+function MyComponent({ data, otherData }) {
+  const { foo, bar, baz } = useMemo(() => {
+    // do some heavy lifting with data
+    return {
+      foo,
+      bar,
+      baz,
+    };
+  }, [data]);
+
+  const [fii, fum] = useMemo(() => {
+    // do some expensive calculations
+    return [fii, fum];
+  }, [otherData]);
+
+  /*...*/
+}
 ```
 
 ---
 
 ## useCallback
 
-blah
+function components often define handlers inside the function body
+
+```
+import React from 'react';
+
+function MyComponent() {
+  const onClick = () => doStuff();
+
+  /*...*/
+}
+```
+
+anything defined in the function body is recreated on each rerender
+
+---
+
+`useCallback` prevent needlessly recreating handlers defined in function bodies
+
+```
+import React, { useCallback } from 'react';
+
+function MyComponent({ foo }) {
+  const onClick = useCallback(() => doStuff(), []);
+
+  const onOtherClick = useCallback(() => doOtherStuff(foo), [foo]);
+
+  return (
+    <button onClick={useCallback(() => doSomethingElse(), [])} />
+  );
+}
+```
+
+```notes
+useCallback also allows for guilt-free inline JSX handler
+```
+
+---
+
+### `useCallback` is just a convenience wrapper for `useMemo`
+
+<br />
+
+```
+useCallback(fn, inputs) === useMemo(() => fn, inputs)
+```
 
 ---
 
 ### So why not `useMemo` and `useCallback` everything?
+
+<br />
 
 ```
 npm install babel-plugin-react-persist
@@ -661,7 +939,15 @@ function MyComponent() {
 ### `useRef` replaces Instance Variables
 
 ```
-import React, { useRef, useEffect } from 'react';
+class ClassWithInstanceVars extends React.Component {
+  timeoutRef: null;
+
+  doStuff = () => {
+    this.timeoutRef = setTimeout(doSomethingLater, 1000);
+  };
+
+  /*...*/
+}
 
 function MyComponent() {
   const timeoutRef = useRef();
@@ -700,6 +986,8 @@ react-spring uses this to customize the Controller API exposed on the component 
 ## useLayoutEffect
 
 Similar to `useEffect` but only fires after all DOM mutations have completed.
+
+Synchronous, so blocks UI updates - be careful not to overuse this
 
 ---
 
@@ -740,6 +1028,45 @@ ref: https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-st
 ## DEMO TIME
 
 <img src="images/cool.gif" style={{ height: '500px' }} />
+
+---
+
+## Concerns
+
+<ul>
+  <Appear>
+    <ListItem>less efficient than classes?</ListItem>
+    <ListItem>is React overstepping its bounds?</ListItem>
+    <ListItem>recreate callbacks on each render?</ListItem>
+    <ListItem style={{ listStyleType: 'none', marginTop: '50px' }}>
+      "We should forget about small efficiencies, say about 97% of the time:
+      premature optimization is the root of all evil. Yet we should not pass up
+      our opportunities in that critical 3%." - Donald Knuth
+    </ListItem>
+  </Appear>
+</ul>
+
+```notes
+"[Hook state's] kept in the exact same place where React keeps state for classes. React has an internal update queue which is the source of truth for any state, no matter how you define your components."
+
+ref: https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889
+
+...
+
+React has always been a framework, not just a library
+
+Hooks are totally opt-in
+
+Can't make progress without trying new things
+
+...
+
+Modern devices have overhead to spare for most tasks; useCallback and useMemo are available when performance is priority
+
+Knuth, Stanford professor emeritus and author, dedicated much of his life to and is well published in algorithm design and optimization
+
+ref: https://medium.com/@okaleniuk/premature-optimization-is-the-root-of-all-evil-is-the-root-of-evil-a8ab8056c6b
+```
 
 ---
 
@@ -799,3 +1126,7 @@ ref: https://github.com/facebook/react/packages/react-reconciler/src/ReactFiberH
 ### Give me a Follow and try the demos yourself 😎
 
 <https://github.com/superhawk610/why-react-hooks>
+
+```notes
+all links are in the mdx-deck notes
+```
