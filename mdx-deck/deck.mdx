@@ -21,7 +21,7 @@ export { default as theme } from './theme';
 ## What are hooks?
 
 - replacement for Higher-Order Components & render props
-- stateful lifecycle methods for functional components
+- stateful lifecycle methods for function components
 
 ---
 
@@ -162,7 +162,7 @@ ref: https://twitter.com/prchdk/status/1056960391543062528
 - useDebugValue
 
 ```notes
-- useImperativeHandle was originall useImperativeMethods
+- useImperativeHandle was originally useImperativeMethods
 ```
 
 ---
@@ -608,6 +608,7 @@ Think of it as hooking into any time just after your component has painted to th
 ```
 import React, { useEffect } from 'react';
 
+// componentDidMount
 function Mounter({ user, notifications }) {
 
   useEffect(() => {
